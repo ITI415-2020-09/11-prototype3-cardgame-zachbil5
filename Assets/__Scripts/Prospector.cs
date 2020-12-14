@@ -152,7 +152,7 @@ public class Prospector : MonoBehaviour {
         }
 
         // Set up the initial target card
-        MoveToTarget(Draw());
+        //MoveToTarget(Draw());
 
         // Set up the Draw pile
         UpdateDrawPile();
@@ -202,7 +202,7 @@ public class Prospector : MonoBehaviour {
 
         // Position this card on the discardPile
         cd.transform.localPosition = new Vector3(layout.multiplier.x * layout.discardPile.x, layout.multiplier.y * layout.discardPile.y, -layout.discardPile.layerID + 0.5f);
-        cd.faceUp = true;
+        cd.faceUp = false;
         // Place it on top of the pile for depth sorting
         cd.SetSortingLayerName(layout.discardPile.layerName);
         cd.SetSortOrder(-100 + discardPile.Count);
@@ -253,6 +253,7 @@ public class Prospector : MonoBehaviour {
         {
             case eCardState.target:
                 // Clicking the target card does nothing
+
                 break;
 
             case eCardState.drawpile:
@@ -265,24 +266,39 @@ public class Prospector : MonoBehaviour {
                 break;
 
             case eCardState.tableau:
+                // check if king because it goes straight to discard
                 // Clicking a card in the tableau will check if it's a valid play
-                bool validMatch = true;
-                if (!cd.faceUp)
+                if (cd.rank != 13)
                 {
-                    // If the card is face-down, it's not valid
-                    validMatch = false;
-                }
-                if(!AdjacentRank(cd, target))
-                {
-                    // If it's not an adjacent rank, it's not valid
-                    validMatch = false;
-                }
-                if (!validMatch) return; // return if not valid
+                    if (target == null)
+                    {
+                        target = cd;
+                        return;
+                    }
+                    bool validMatch = true;
+                    if (!cd.faceUp)
+                    {
+                        // If the card is face-down, it's not valid 
+                        // Change to free uses the same method as faceup but doesnt make it faceup visually
+                        validMatch = false;
+                    }
 
+                    if (!AddTo13(cd, target)) // replace with does it add up to 13 if 13 true else false and get out add to discard pile set target back to null
+                    {
+                        // If it's not an adjacent rank, it's not valid
+                        validMatch = false;
+                    }
+                    if (!validMatch) return; // return if not valid
+                }
                 // If we got here then it's a valid card
                 tableau.Remove(cd); // Remove it from the tableau List
-                MoveToTarget(cd); // Make it the target card
-                SetTableauFaces(); // Update tableau card face-ups
+                tableau.Remove(target);
+                // MoveToTarget(cd); // Make it the target card
+                MoveToDiscard(cd);
+                if(target!=null)
+                MoveToDiscard(target);
+                target = null;
+                //SetTableauFaces(); // Update tableau card face-ups
                 ScoreManager.EVENT(eScoreEvent.mine);
                 FloatingScoreHandler(eScoreEvent.mine);
                 break;
@@ -383,7 +399,14 @@ public class Prospector : MonoBehaviour {
         //Otherwise, return false
         return (false);
     }
-
+    public bool AddTo13(CardProspector c0, CardProspector c1)
+    {
+        if (!c0.faceUp || !c1.faceUp) return (false);
+        
+        if (c0.rank + c1.rank == 13)
+            return true;
+        return false;
+    }
     // Handle FloatingScore movement
     void FloatingScoreHandler(eScoreEvent evt)
     {
