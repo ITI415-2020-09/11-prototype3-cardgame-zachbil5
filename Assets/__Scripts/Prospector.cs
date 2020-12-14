@@ -258,8 +258,13 @@ public class Prospector : MonoBehaviour {
 
             case eCardState.drawpile:
                 // Clicking any card in the drawPile will draw the next card
-                MoveToDiscard(target); // Moves the target to the discardPile
-                MoveToTarget(Draw()); // Moves the next drawn card to the target
+                //MoveToDiscard(target); // Moves the target to the discardPile
+                //MoveToTarget(Draw()); // Moves the next drawn card to the target
+                
+                cd.transform.parent = layoutAnchor;
+                cd.transform.localPosition = cd.transform.localPosition + new Vector3(-10f,0f,0f);
+                cd.faceUp = true;
+                cd.state = eCardState.tableau;
                 UpdateDrawPile(); // Restacks the drawPile
                 ScoreManager.EVENT(eScoreEvent.draw);
                 FloatingScoreHandler(eScoreEvent.draw);
@@ -290,6 +295,7 @@ public class Prospector : MonoBehaviour {
                     }
                     if (!validMatch) return; // return if not valid
                 }
+                else target = null;
                 // If we got here then it's a valid card
                 tableau.Remove(cd); // Remove it from the tableau List
                 tableau.Remove(target);

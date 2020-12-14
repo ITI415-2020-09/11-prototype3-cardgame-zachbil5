@@ -4,7 +4,7 @@
 	<!-- The multiplier is multiplied by the x and y attributes below. -->
 	<!-- This determines how loose or tight the layout is. --> 
 	<multiplier x="1.25" y="1.5" />
-	
+  
 	<!-- In the XML below, id is the number of the card -->
 	<!-- x and y set position -->
 	<!-- faceup is 1 if the card is face-up -->
