@@ -21,20 +21,20 @@
 	<slot id="3" x="-2" y="3" faceup="1" layer="2" hiddenby="6,7" />
 	<slot id="4" x="0" y="3" faceup="1" layer="2" hiddenby="7,8" />
 	<slot id="5" x="2" y="3" faceup="1" layer="2" hiddenby="8,9" />
-  <!-- Layer3, the top level. -->
+  <!-- Layer3, the next level. -->
 	<slot id="6" x="-3"  y="2" faceup="1" layer="3" hiddenby="10,11" />
 	<slot id="7" x="-1"  y="2" faceup="1" layer="3" hiddenby="11,12" />
 	<slot id="8" x="1"  y="2" faceup="1" layer="3" hiddenby="12,13" />
   <slot id="9"  x="3" y="2" faceup="1" layer="3" hiddenby="13,14" />
 
-  <!-- Layer4, the top level. -->
+  <!-- Layer4, the next level. -->
 	<slot id="10" x="-4" y="1" faceup="1" layer="4" hiddenby="15,16" />
 	<slot id="11" x="-2" y="1" faceup="1" layer="4" hiddenby="16,17" />
 	<slot id="12" x="0" y="1" faceup="1" layer="4" hiddenby="17,18" />
 	<slot id="13" x="2"  y="1" faceup="1" layer="4" hiddenby="18,19" />
 	<slot id="14" x="4"  y="1" faceup="1" layer="4" hiddenby="19,20" />
 
-  <!-- Layer5, the top level. -->
+  <!-- Layer5, the next level. -->
 	<slot id="15" x="-5"  y="0" faceup="1" layer="5" hiddenby="21,22" />
 	<slot id="16" x="-3"  y="0" faceup="1" layer="5" hiddenby="22,23" />
 	<slot id="17" x="-1"  y="0" faceup="1" layer="5" hiddenby="23,24" />

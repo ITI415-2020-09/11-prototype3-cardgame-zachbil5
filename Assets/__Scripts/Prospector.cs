@@ -21,7 +21,8 @@ public class Prospector : MonoBehaviour {
     public Vector2 fsPosEnd = new Vector2(0.5f, 0.95f);
     public float reloadDelay = 1f; // The delay between rounds
     public Text gameOverText, roundResultText, highScoreText;
-
+    private int sortCount = 0;
+    private int drawsLeft = 3;
     [Header("Set Dynamically")]
     public Deck deck;
     public Layout layout;
@@ -212,16 +213,24 @@ public class Prospector : MonoBehaviour {
     void MoveToTarget(CardProspector cd)
     {
         // If there is currently a target card, move it to discardPile
-        if (target != null) MoveToDiscard(target);
+        sortCount++;
+        //if (target != null) MoveToDiscard(target);
+        if (target != null)
+        {
+            target.faceUp = false;
+            
+            //target.SetSortOrder(sortCount);
+        }
         target = cd; // cd is the new target
         cd.state = eCardState.target;
         cd.transform.parent = layoutAnchor;
         // Move to the target position
-        cd.transform.localPosition = new Vector3(layout.multiplier.x * layout.discardPile.x, layout.multiplier.y * layout.discardPile.y, -layout.discardPile.layerID);
+        cd.transform.localPosition = new Vector3(layout.multiplier.x * layout.drawPile.x, layout.multiplier.y * layout.drawPile.y - 4f, -layout.discardPile.layerID);
         cd.faceUp = true; // Make it face-up
         // Set the depth sorting
         cd.SetSortingLayerName(layout.discardPile.layerName);
-        cd.SetSortOrder(0);
+        
+        cd.SetSortOrder(sortCount);
     }
 
     // Arranges all the cards of the drawPile to show how many are left
@@ -259,10 +268,10 @@ public class Prospector : MonoBehaviour {
             case eCardState.drawpile:
                 // Clicking any card in the drawPile will draw the next card
                 //MoveToDiscard(target); // Moves the target to the discardPile
-                //MoveToTarget(Draw()); // Moves the next drawn card to the target
-                
+                MoveToTarget(Draw()); // Moves the next drawn card to the target
+                target = null;
                 cd.transform.parent = layoutAnchor;
-                cd.transform.localPosition = cd.transform.localPosition + new Vector3(-10f,0f,0f);
+               // cd.transform.position = new Vector3(cd.transform.position.x - 1f,cd.transform.position.y-1f ,0);
                 cd.faceUp = true;
                 cd.state = eCardState.tableau;
                 UpdateDrawPile(); // Restacks the drawPile
@@ -293,11 +302,17 @@ public class Prospector : MonoBehaviour {
                         // If it's not an adjacent rank, it's not valid
                         validMatch = false;
                     }
-                    if (!validMatch) return; // return if not valid
+                    if (!validMatch)
+                    {
+                        target = null;
+                        return; // return if not valid
+
+                    }
                 }
                 else target = null;
                 // If we got here then it's a valid card
                 tableau.Remove(cd); // Remove it from the tableau List
+                if(target!=null)
                 tableau.Remove(target);
                 // MoveToTarget(cd); // Make it the target card
                 MoveToDiscard(cd);
@@ -323,10 +338,17 @@ public class Prospector : MonoBehaviour {
             GameOver(true);
             return;
         }
-
+        if(drawPile.Count == 0)
+        {
+            drawsLeft--;
+            if (drawsLeft <= 0) GameOver(false);
+            //Shuffle drawn cards back in the order they were drawn and let player draw again (they can reshuffle the draw pile 3 times).
+            return;
+        }
         // If there are still cards in the draw pile, the game's not over
         if (drawPile.Count > 0)
         {
+            
             return;
         }
 
